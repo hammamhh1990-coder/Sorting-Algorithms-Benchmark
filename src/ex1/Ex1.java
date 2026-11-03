@@ -531,7 +531,7 @@ public class Ex1
         
         System.out.println("----------------------------------------------------------------------------------------------------------");
         String[] algorithms = {"Selection Sort", "Insertion Sort", "Bubble Sort","Quick Sort","Merge Sort"};
-        System.out.println("Algorithms            "+ "  Random  "+ "            Inversely Sorted  "+"          Sorted    "+"      Partially Sorted  ");
+        System.out.println("Algorithms            "+ "  Random        "+ "        Sorted    "+"         Inversely Sorted   "+"      Partially Sorted  ");
         System.out.println("----------------------------------------------------------------------------------------------------------");
         for (int i = 0; i < algorithms.length; i++) 
         {
