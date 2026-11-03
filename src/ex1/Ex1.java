@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 public class Ex1 
 {
+    public static long[][] timer1 = new long[5][4];
     public static void selection_sort(int a[],int n)
     {
         int i,j,smallast;
@@ -102,6 +103,13 @@ public class Ex1
     
     public static int partition(int[] A, int left, int right) 
     {
+        Random r = new Random();
+        int rIndex = r.nextInt(right-left+1)+left;
+        
+        int temps = A[rIndex];
+        A[rIndex]=A[left];
+        A[left]=temps;
+        
         int x = A[left];
         int i = left;
 
@@ -134,6 +142,63 @@ public class Ex1
         quickSort(A, middle + 1, right);
     }
     
+
+    public static void mergeSort(int[]A, int left, int right) 
+    {
+        if (left >= right) 
+        {
+            return;
+        }
+        int middle = (left + right) / 2;
+        mergeSort(A, left, middle);
+        mergeSort(A, middle + 1, right);
+        merge(A, left, middle, right);
+    }
+
+    public static void merge(int[] A, int left, int middle, int right) 
+    {
+        int n1 = middle - left + 1;
+        int n2 = right - middle;
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+        
+        for (int i=0;i<n1;i++) 
+        {
+            L[i] = A[left+i];
+        }
+        for (int j=0;j<n2;j++) 
+        {
+            R[j]=A[middle+1+j];
+        }
+        
+        int i = 0;
+        int j = 0;
+        int k=left;
+        
+        while (i<n1&&j<n2) 
+        {
+            if (L[i]<R[j]) 
+            {
+                A[k++] = L[i++];
+            } 
+            else 
+            {
+                A[k++]=R[j++];
+            }
+        }
+        
+        while(i<n1) 
+        {
+            A[k++]=L[i++];
+        }
+        
+        while (j<n2) 
+        {
+            A[k++]=R[j++];
+        }
+    }
+
+    
     public static long S1selection_sort(int s[],int size)
     {
         int []arr = s.clone();
@@ -143,9 +208,11 @@ public class Ex1
         long ETime = System.nanoTime();
         long time = ETime-STime;
         double second = time/sec;
+        double micro = time/1000;
         System.out.println("******************************");
         System.out.println("Selection Sort");
         System.out.println("Time in Nanoseconds : "+ time + "ns");
+        System.out.println("Time in Microseconds : "+micro+"μs");
         System.out.println("Time by Second : "+ second + "s");
         System.out.println("******************************");
         return time;
@@ -160,9 +227,11 @@ public class Ex1
         long ETime = System.nanoTime();
         long time = ETime-STime;
         double second = time/sec;
+        double micro = time/1000;
         System.out.println("******************************");
         System.out.println("Insertion sort");
         System.out.println("Time in Nanoseconds : "+ time + "ns");
+        System.out.println("Time in Microseconds : "+micro+"μs");
         System.out.println("Time by Second : "+ second + "s");
         System.out.println("******************************");
         return time;
@@ -177,9 +246,11 @@ public class Ex1
         long ETime = System.nanoTime();
         long time = ETime-STime;
         double second = time/sec;
+        double micro = time/1000;
         System.out.println("******************************");
         System.out.println("Bubble Sort");
         System.out.println("Time in Nanoseconds : "+ time + "ns");
+        System.out.println("Time in Microseconds : "+micro+"μs");
         System.out.println("Time by Second : "+ second + "s");
         System.out.println("******************************");
         return time;
@@ -194,9 +265,30 @@ public class Ex1
         long ETime = System.nanoTime();
         long time = ETime-STime;
         double second = time/sec;
+        double micro = time/1000;
         System.out.println("******************************");
         System.out.println("Quick Sort");
         System.out.println("Time in Nanoseconds : "+ time + "ns");
+        System.out.println("Time in Microseconds : "+micro+"μs");
+        System.out.println("Time by Second : "+ second + "s");
+        System.out.println("******************************");
+        return time;
+    }
+    
+    public static long S1mergeSort(int s[],int size)
+    {
+        int []arr = s.clone();
+        double sec = 1000000000.0;
+        long STime= System.nanoTime();
+        mergeSort(arr,0,size-1);
+        long ETime = System.nanoTime();
+        long time = ETime-STime;
+        double second = time/sec;
+        double micro = time/1000;
+        System.out.println("******************************");
+        System.out.println("Merge Sort");
+        System.out.println("Time in Nanoseconds : "+ time + "ns");
+        System.out.println("Time in Microseconds : "+micro+"μs");
         System.out.println("Time by Second : "+ second + "s");
         System.out.println("******************************");
         return time;
@@ -208,17 +300,26 @@ public class Ex1
         
         //Selection Sort
         long tselection_sort = S1selection_sort(s,size);
+        timer1[0][0]=tselection_sort/1000;
         
         //Insertion sort
         long tInsertion_sort = S1Insertion_sort(s,size);
+        timer1[1][0]=tInsertion_sort/1000;
         
         //Bubble_Sort
         long tBubbleSort = S1Bubble_Sort(s,size);
+        timer1[2][0]=tBubbleSort/1000;
         
         //Quick Sort
         long tQuickSort = S1quickSort(s,size);
+        timer1[3][0]=tQuickSort/1000;
         
-        long minTime = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        //Merge Sort
+        long tmergeSort = S1mergeSort(s,size);
+        timer1[4][0]=tmergeSort/1000;
+        
+        long minTime1 = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        long minTime = Math.min(minTime1, tmergeSort);
         String fastest="";
         if(minTime==tselection_sort)
         {
@@ -236,7 +337,10 @@ public class Ex1
         {
             fastest = "Quick Sort";
         }
-        
+        else if(minTime==tmergeSort)
+        {
+            fastest="Merge Sort";
+        }
         System.out.println("The Fastest is "+fastest);
     }
     
@@ -248,19 +352,26 @@ public class Ex1
         
         //Selection Sort
         long tselection_sort = S1selection_sort(arr,size);
+        timer1[0][1]=tselection_sort/1000;
         
         //Insertion sort
         long tInsertion_sort = S1Insertion_sort(arr,size);
+        timer1[1][1]=tInsertion_sort/1000;
         
         //Bubble_Sort
         long tBubbleSort = S1Bubble_Sort(arr,size);
+        timer1[2][1]=tBubbleSort/1000;
         
         //Quick Sort
-//        long tQuickSort = S1quickSort(arr,size);
-//        long minTime = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
-        long mTime = Math.min(tselection_sort, tInsertion_sort);
-        long minTime = Math.min(tBubbleSort, mTime);
+        long tQuickSort = S1quickSort(arr,size);
+        timer1[3][1]=tQuickSort/1000;
         
+        //Merge Sort
+        long tmergeSort = S1mergeSort(arr,size);
+        timer1[4][1]=tmergeSort/1000;
+        
+        long minTime1 = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        long minTime = Math.min(minTime1, tmergeSort);
         String fastest="";
         if(minTime==tselection_sort)
         {
@@ -274,11 +385,14 @@ public class Ex1
         {
             fastest = "Bubble Sort";
         }
-//        else if(minTime==tQuickSort)
-//        {
-//            fastest = "Quick Sort";
-//        }
-        
+        else if(minTime==tQuickSort)
+        {
+            fastest = "Quick Sort";
+        }
+        else if(minTime==tmergeSort)
+        {
+            fastest="Merge Sort";
+        }
         System.out.println("The Fastest is "+fastest);
     }
     
@@ -290,18 +404,26 @@ public class Ex1
         
         //Selection Sort
         long tselection_sort = S1selection_sort(arr,size);
+        timer1[0][2]=tselection_sort/1000;
         
         //Insertion sort
         long tInsertion_sort = S1Insertion_sort(arr,size);
+        timer1[1][2]=tInsertion_sort/1000;
         
         //Bubble_Sort
         long tBubbleSort = S1Bubble_Sort(arr,size);
+        timer1[2][2]=tBubbleSort/1000;
         
         //Quick Sort
-//        long tQuickSort = S1quickSort(arr,size);
-//        long minTime = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
-        long mTime = Math.min(tselection_sort, tInsertion_sort);
-        long minTime = Math.min(tBubbleSort, mTime);
+        long tQuickSort = S1quickSort(arr,size);
+        timer1[3][2]=tQuickSort/1000;
+        
+        //Merge Sort
+        long tmergeSort = S1mergeSort(arr,size);
+        timer1[4][2]=tmergeSort/1000;
+        
+        long minTime1 = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        long minTime = Math.min(minTime1, tmergeSort);
         String fastest="";
         if(minTime==tselection_sort)
         {
@@ -315,11 +437,14 @@ public class Ex1
         {
             fastest = "Bubble Sort";
         }
-//        else if(minTime==tQuickSort)
-//        {
-//            fastest = "Quick Sort";
-//        }
-        
+        else if(minTime==tQuickSort)
+        {
+            fastest = "Quick Sort";
+        }
+        else if(minTime==tmergeSort)
+        {
+            fastest="Merge Sort";
+        }
         System.out.println("The Fastest is "+fastest);
     }
     
@@ -332,17 +457,26 @@ public class Ex1
         
         //Selection Sort
         long tselection_sort = S1selection_sort(arr,size);
+        timer1[0][3]=tselection_sort/1000;
         
         //Insertion sort
         long tInsertion_sort = S1Insertion_sort(arr,size);
+        timer1[1][3]=tInsertion_sort/1000;
         
         //Bubble_Sort
         long tBubbleSort = S1Bubble_Sort(arr,size);
+        timer1[2][3]=tBubbleSort/1000;
         
         //Quick Sort
         long tQuickSort = S1quickSort(arr,size);
+        timer1[3][3]=tQuickSort/1000;
         
-        long minTime = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        //Merge Sort
+        long tmergeSort = S1mergeSort(arr,size);
+        timer1[4][3]=tmergeSort/1000;
+        
+        long minTime1 = Math.min(Math.min(tselection_sort, tInsertion_sort),Math.min(tBubbleSort, tQuickSort));
+        long minTime = Math.min(minTime1, tmergeSort);
         String fastest="";
         if(minTime==tselection_sort)
         {
@@ -360,12 +494,16 @@ public class Ex1
         {
             fastest = "Quick Sort";
         }
+        else if(minTime==tmergeSort)
+        {
+            fastest="Merge Sort";
+        }
         System.out.println("The Fastest is "+fastest);
     }
     
     public static void main(String[] args) 
     {
-        int []x = new Random().ints(1000000).toArray() ;
+        int []x = new Random().ints(100000).toArray();
         
         Scenario1(x,x.length);
         
@@ -386,5 +524,24 @@ public class Ex1
         System.out.println("");
         
         Scenario4(x,x.length);
+        
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        String[] algorithms = {"Selection Sort", "Insertion Sort", "Bubble Sort","Quick Sort","Merge Sort"};
+        System.out.println("Algorithms            "+ "  Random  "+ "            Inversely Sorted  "+"          Sorted    "+"      Partially Sorted  ");
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+        for (int i = 0; i < algorithms.length; i++) 
+        {
+            System.out.printf(java.util.Locale.US,"%-18s | %-12d μs     | %-12d μs     | %-12d μs     | %-12d μs%n",
+                    algorithms[i], 
+                    timer1[i][0], 
+                    timer1[i][1], 
+                    timer1[i][2], 
+                    timer1[i][3]);
+        }
+        System.out.println("----------------------------------------------------------------------------------------------------------");
     }
 }
